@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgentHub - Expert AI Solutions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .agent-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .agent-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .agent-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .agent-icon {
+            font-size: 2em;
+            margin-right: 15px;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .agent-title {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .agent-price {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .agent-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .agent-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: #888;
+        }
+
+        .use-agent-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .use-agent-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .input-group input,
+        .input-group textarea,
+        .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .process-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .process-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .process-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-section {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .result-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .cost-display {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .admin-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .admin-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .agent-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .modal-content {
+                margin: 10% auto;
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AgentHub</h1>
+            <p>Specialized AI Experts for Every Task</p>
+        </div>
+
+        <div class="agent-grid" id="agentGrid">
+            <!-- Agents will be populated here -->
+        </div>
+    </div>
+
+    <!-- Agent Modal -->
+    <div id="agentModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modalContent">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div class="admin-panel">
+        <div>Admin Tools</div>
+        <button class="admin-btn" onclick="showAgentCreator()">+ Add Agent</button>
+        <button class="admin-btn" onclick="showAnalytics()">📊 Analytics</button>
+    </div>
+
+    <script>
+        // Sample agent configurations
+        const agents = [
+            {
+                id: 'content-optimizer',
+                title: 'Content SEO Optimizer',
+                icon: '📝',
+                price: '$2.99',
+                description: 'Transform your content for maximum SEO impact. Analyzes keywords, readability, and structure to boost search rankings.',
+                uses: 1247,
+                rating: 4.8,
+                inputs: [
+                    { type: 'textarea', name: 'content', label: 'Your Content', placeholder: 'Paste your article or blog post here...' },
+                    { type: 'text', name: 'keywords', label: 'Target Keywords', placeholder: 'keyword1, keyword2, keyword3' },
+                    { type: 'select', name: 'tone', label: 'Content Tone', options: ['Professional', 'Casual', 'Technical', 'Creative'] }
+                ],
+                process: async function(data) {
+                    // Simulate AI processing
+                    await new Promise(resolve => setTimeout(resolve, 3000));
+                    return {
+                        optimizedContent: data.content.replace(/\./g, '. ') + '\n\n[SEO OPTIMIZED VERSION]\n\nYour content has been enhanced with improved keyword density, better structure, and optimized meta descriptions.',
+                        seoScore: Math.floor(Math.random() * 30) + 70,
+                        suggestions: ['Add more internal links', 'Improve meta description', 'Use more semantic keywords', 'Optimize image alt tags']
+                    };
+                }
+            },
+            {
+                id: 'email-responder',
+                title: 'Smart Email Assistant',
+                icon: '📧',
+                price: '$1.99',
+                description: 'Generate professional email responses instantly. Perfect for customer service, sales follow-ups, and business communication.',
+                uses: 892,
+                rating: 4.9,
+                inputs: [
+                    { type: 'textarea', name: 'email', label: 'Original Email', placeholder: 'Paste the email you need to respond to...' },
+                    { type: 'select', name: 'tone', label: 'Response Tone', options: ['Professional', 'Friendly', 'Formal', 'Apologetic'] },
+                    { type: 'text', name: 'context', label: 'Additional Context', placeholder: 'Any specific points to address?' }
+                ],
+                process: async function(data) {
+                    await new Promise(resolve => setTimeout(resolve, 2500));
+                    return {
+                        response: `Dear [Name],\n\nThank you for your email. I understand your concerns and would like to address them promptly.\n\n[Your personalized response based on the ${data.tone.toLowerCase()} tone you selected]\n\nBest regards,\n[Your Name]`,
+                        alternatives: ['More formal version', 'Shorter version', 'With apology emphasis'],
+                        confidence: 94
+                    };
+                }
+            },
+            {
+                id: 'data-analyzer',
+                title: 'Business Intelligence Agent',
+                icon: '📊',
+                price: '$4.99',
+                description: 'Upload your data and get instant insights. Creates charts, identifies trends, and provides actionable business recommendations.',
+                uses: 634,
+                rating: 4.7,
+                inputs: [
+                    { type: 'file', name: 'dataset', label: 'Upload Data File', accept: '.csv,.xlsx,.json' },
+                    { type: 'select', name: 'analysis', label: 'Analysis Type', options: ['Trend Analysis', 'Performance Metrics', 'Predictive Insights', 'Comparative Analysis'] },
+                    { type: 'text', name: 'focus', label: 'Focus Area', placeholder: 'What specific metrics matter most?' }
+                ],
+                process: async function(data) {
+                    await new Promise(resolve => setTimeout(resolve, 4000));
+                    return {
+                        insights: `Based on your ${data.analysis}, here are the key findings:\n\n• 23% increase in performance over last quarter\n• Peak activity occurs on Tuesdays\n• Recommendation: Focus marketing efforts on high-converting segments`,
+                        charts: ['Trend chart generated', 'Performance comparison ready', 'Forecast model created'],
+                        actionable: ['Increase Tuesday campaigns by 40%', 'Optimize for mobile users', 'Expand successful product lines']
+                    };
+                }
+            },
+            {
+                id: 'social-content',
+                title: 'Social Media Genius',
+                icon: '📱',
+                price: '$2.49',
+                description: 'Create viral-worthy social media content. Generates posts, hashtags, and engagement strategies tailored to your brand.',
+                uses: 1456,
+                rating: 4.6,
+                inputs: [
+                    { type: 'text', name: 'topic', label: 'Content Topic', placeholder: 'What do you want to post about?' },
+                    { type: 'select', name: 'platform', label: 'Platform', options: ['Instagram', 'Twitter/X', 'LinkedIn', 'TikTok', 'Facebook'] },
+                    { type: 'select', name: 'goal', label: 'Campaign Goal', options: ['Engagement', 'Brand Awareness', 'Sales', 'Education'] }
+                ],
+                process: async function(data) {
+                    await new Promise(resolve => setTimeout(resolve, 2800));
+                    return {
+                        posts: [`🔥 ${data.topic} content for ${data.platform}! Ready to boost your ${data.goal.toLowerCase()}?`, 'Alternative version with different hook', 'Story/Reel version'],
+                        hashtags: ['#trending', '#viral', '#socialmedia', '#content', '#marketing'],
+                        bestTime: 'Tuesday 2-4 PM for maximum engagement',
+                        engagementTips: ['Ask questions to boost comments', 'Use eye-catching visuals', 'Post consistently']
+                    };
+                }
+            },
+            {
+                id: 'legal-reviewer',
+                title: 'Contract Review Assistant',
+                icon: '⚖️',
+                price: '$7.99',
+                description: 'Review contracts and legal documents for potential issues. Identifies red flags and suggests improvements.',
+                uses: 234,
+                rating: 4.9,
+                inputs: [
+                    { type: 'file', name: 'contract', label: 'Upload Contract', accept: '.pdf,.doc,.docx,.txt' },
+                    { type: 'select', name: 'type', label: 'Contract Type', options: ['Employment', 'Service Agreement', 'NDA', 'Partnership', 'Other'] },
+                    { type: 'textarea', name: 'concerns', label: 'Specific Concerns', placeholder: 'Any particular clauses you\'re worried about?' }
+                ],
+                process: async function(data) {
+                    await new Promise(resolve => setTimeout(resolve, 5000));
+                    return {
+                        riskLevel: 'Medium',
+                        redFlags: ['Unusual termination clause in section 4.2', 'Vague intellectual property terms', 'Missing dispute resolution mechanism'],
+                        suggestions: ['Clarify payment terms timeline', 'Add liability cap provisions', 'Include force majeure clause'],
+                        summary: `This ${data.type} contract has been reviewed for standard compliance and potential issues. Overall risk assessment: Medium. Key areas requiring attention have been identified.`
+                    };
+                }
+            },
+            {
+                id: 'resume-optimizer',
+                title: 'Resume Power-Up',
+                icon: '💼',
+                price: '$3.99',
+                description: 'Transform your resume into an interview-winning document. ATS optimization, keyword enhancement, and formatting.',
+                uses: 987,
+                rating: 4.8,
+                inputs: [
+                    { type: 'file', name: 'resume', label: 'Upload Resume', accept: '.pdf,.doc,.docx' },
+                    { type: 'text', name: 'position', label: 'Target Position', placeholder: 'Software Engineer, Marketing Manager, etc.' },
+                    { type: 'text', name: 'company', label: 'Target Company (Optional)', placeholder: 'Google, Microsoft, etc.' }
+                ],
+                process: async function(data) {
+                    await new Promise(resolve => setTimeout(resolve, 3500));
+                    return {
+                        atsScore: 87,
+                        improvements: ['Enhanced action verbs throughout', 'Added industry-specific keywords', 'Improved formatting for ATS systems', 'Quantified achievements with metrics'],
+                        keywordMatch: '92% match with typical ' + data.position + ' job descriptions',
+                        optimizedSections: ['Professional Summary', 'Skills Section', 'Work Experience', 'Achievement Metrics']
+                    };
+                }
+            }
+        ];
+
+        let currentAgent = null;
+
+        function renderAgents() {
+            const grid = document.getElementById('agentGrid');
+            grid.innerHTML = '';
+
+            agents.forEach(agent => {
+                const card = document.createElement('div');
+                card.className = 'agent-card';
+                card.onclick = () => openAgent(agent);
+                
+                card.innerHTML = `
+                    <div class="agent-header">
+                        <div class="agent-icon">${agent.icon}</div>
+                        <div>
+                            <div class="agent-title">${agent.title}</div>
+                            <div class="agent-price">${agent.price}</div>
+                        </div>
+                    </div>
+                    <div class="agent-description">${agent.description}</div>
+                    <div class="agent-stats">
+                        <span>🔥 ${agent.uses} uses</span>
+                        <span>⭐ ${agent.rating}/5</span>
+                    </div>
+                    <button class="use-agent-btn">Use Agent →</button>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        function openAgent(agent) {
+            currentAgent = agent;
+            const modal = document.getElementById('agentModal');
+            const content = document.getElementById('modalContent');
+            
+            let inputsHTML = '';
+            agent.inputs.forEach(input => {
+                if (input.type === 'select') {
+                    inputsHTML += `
+                        <div class="input-group">
+                            <label>${input.label}</label>
+                            <select name="${input.name}">
+                                ${input.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                            </select>
+                        </div>
+                    `;
+                } else if (input.type === 'textarea') {
+                    inputsHTML += `
+                        <div class="input-group">
+                            <label>${input.label}</label>
+                            <textarea name="${input.name}" placeholder="${input.placeholder || ''}"></textarea>
+                        </div>
+                    `;
+                } else if (input.type === 'file') {
+                    inputsHTML += `
+                        <div class="input-group">
+                            <label>${input.label}</label>
+                            <input type="file" name="${input.name}" accept="${input.accept || ''}" />
+                        </div>
+                    `;
+                } else {
+                    inputsHTML += `
+                        <div class="input-group">
+                            <label>${input.label}</label>
+                            <input type="${input.type}" name="${input.name}" placeholder="${input.placeholder || ''}" />
+                        </div>
+                    `;
+                }
+            });
+
+            content.innerHTML = `
+                <h2>${agent.icon} ${agent.title}</h2>
+                <div class="cost-display">
+                    <strong>Cost: ${agent.price}</strong> - Pay after processing
+                </div>
+                <form id="agentForm">
+                    ${inputsHTML}
+                    <button type="submit" class="process-btn">Process with AI Agent</button>
+                </form>
+                <div id="resultArea"></div>
+            `;
+
+            modal.style.display = 'block';
+
+            document.getElementById('agentForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await processWithAgent();
+            });
+        }
+
+        async function processWithAgent() {
+            const form = document.getElementById('agentForm');
+            const formData = new FormData(form);
+            const data = {};
+            
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+
+            const resultArea = document.getElementById('resultArea');
+            const processBtn = form.querySelector('.process-btn');
+            
+            processBtn.disabled = true;
+            processBtn.textContent = 'Processing...';
+            
+            resultArea.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>AI Agent is working on your request...</p>
+                </div>
+            `;
+
+            try {
+                const result = await currentAgent.process(data);
+                
+                let resultHTML = '<div class="result-section"><h3>🎯 Results</h3>';
+                
+                Object.entries(result).forEach(([key, value]) => {
+                    if (Array.isArray(value)) {
+                        resultHTML += `<p><strong>${key.charAt(0).toUpperCase() + key.slice(1)}:</strong></p><ul>`;
+                        value.forEach(item => resultHTML += `<li>${item}</li>`);
+                        resultHTML += '</ul>';
+                    } else {
+                        resultHTML += `<p><strong>${key.charAt(0).toUpperCase() + key.slice(1)}:</strong> ${value}</p>`;
+                    }
+                });
+                
+                resultHTML += `
+                    <div style="margin-top: 20px; padding: 15px; background: #e8f5e8; border-radius: 8px; text-align: center;">
+                        <p><strong>✅ Processing Complete!</strong></p>
+                        <p>You will be charged ${currentAgent.price} for this processing.</p>
+                        <button onclick="mockPayment()" style="margin-top: 10px; padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">Complete Payment</button>
+                    </div>
+                </div>`;
+                
+                resultArea.innerHTML = resultHTML;
+                
+            } catch (error) {
+                resultArea.innerHTML = `
+                    <div class="result-section" style="border-left-color: #dc3545;">
+                        <h3>❌ Error</h3>
+                        <p>Something went wrong processing your request. Please try again.</p>
+                    </div>
+                `;
+            }
+            
+            processBtn.disabled = false;
+            processBtn.textContent = 'Process with AI Agent';
+        }
+
+        function mockPayment() {
+            alert('🎉 Payment processed! Thank you for using our AI agent. Results saved to your account.');
+            document.getElementById('agentModal').style.display = 'none';
+        }
+
+        function showAgentCreator() {
+            alert('Agent Creator coming soon! This will allow you to create custom AI agents for specific tasks.');
+        }
+
+        function showAnalytics() {
+            alert('Analytics Dashboard:\n\n• Total Revenue: $12,847\n• Most Popular Agent: Content SEO Optimizer\n• Active Users: 1,247\n• Avg. Revenue per User: $8.32');
+        }
+
+        // Modal controls
+        document.querySelector('.close').onclick = function() {
+            document.getElementById('agentModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('agentModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Initialize
+        renderAgents();
+    </script>
+</body>
+</html>

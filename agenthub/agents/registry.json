@@ -1,0 +1,11 @@
+{
+  "agents": [
+    {
+      "id": "content-optimizer",
+      "name": "Content SEO Optimizer",
+      "version": "1.0.0",
+      "enabled": true,
+      "path": "./content-optimizer/"
+    }
+  ]
+}
