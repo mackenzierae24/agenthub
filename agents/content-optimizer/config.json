@@ -1,0 +1,29 @@
+{
+  "id": "content-optimizer",
+  "title": "Content SEO Optimizer",
+  "icon": "📝",
+  "price": "$2.99",
+  "description": "Transform your content for maximum SEO impact. Analyzes keywords, readability, and structure to boost search rankings.",
+  "uses": 1247,
+  "rating": 4.8,
+  "inputs": [
+    {
+      "type": "textarea",
+      "name": "content",
+      "label": "Your Content",
+      "placeholder": "Paste your article or blog post here..."
+    },
+    {
+      "type": "text",
+      "name": "keywords",
+      "label": "Target Keywords",
+      "placeholder": "keyword1, keyword2, keyword3"
+    },
+    {
+      "type": "select",
+      "name": "tone",
+      "label": "Content Tone",
+      "options": ["Professional", "Casual", "Technical", "Creative"]
+    }
+  ]
+}
